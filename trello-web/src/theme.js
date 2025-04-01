@@ -26,14 +26,18 @@
 
 
 import { extendTheme } from '@mui/material/styles'
-import { red, blue } from '@mui/material/colors'
+import { red, blue, teal} from '@mui/material/colors'
 
 const theme = extendTheme({
+  trello: {
+    appBarHeight: '48px',
+    boardBarHeight: '58px',
+  },
   colorSchemes: {
     light: {
       palette: {
         primary: {
-          main: blue[500],
+          main: teal[500],
         },
         secondary: {
           main: red[500],
@@ -43,7 +47,7 @@ const theme = extendTheme({
     dark: {
       palette: {
         primary: {
-          main: blue[300],
+          main: teal[300],
         },
         secondary: {
           main: red[300],
