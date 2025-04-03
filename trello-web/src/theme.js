@@ -1,9 +1,13 @@
 import { extendTheme } from '@mui/material/styles'
 
+const APP_BAR_HEIGHT = '58px'
+const BOARD_BAR_HEIGHT = '58px'
+const BOARD_CONTENT_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT} - ${BOARD_BAR_HEIGHT} )`
 const theme = extendTheme({
   trello: {
-    appBarHeight: '58px',
-    boardBarHeight: '60px',
+    appBarHeight: APP_BAR_HEIGHT,
+    boardBarHeight: BOARD_BAR_HEIGHT,
+    boadrContentHeight: BOARD_CONTENT_HEIGHT,
   },
   colorSchemes: {
     light: {},
@@ -42,6 +46,15 @@ const theme = extendTheme({
         root: ({ theme }) => {
           return {
             fontSize: '0.875rem',
+          }
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: ({ theme }) => {
+          return {
+            '&.MuiRypography-body': { fontSize: '0.875rem'}
           }
         },
       },
