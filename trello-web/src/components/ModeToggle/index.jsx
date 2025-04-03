@@ -6,7 +6,7 @@ function ModeToggle() {
     const { mode, setMode } = useColorScheme()
   
     return (
-      <Button onClick={() => setMode(mode === 'light' ? 'dark' : 'light')} sx={{ minWidth: '120px' }}>
+      <Button onClick={() => setMode(mode === 'light' ? 'dark' : 'light')} sx={{ minWidth: '120px', color: 'white', '&.Mui-focused': {color: 'white'} }}>
         {mode === 'light' ? 'Turn dark' : 'Turn light'}
       </Button>
     )
