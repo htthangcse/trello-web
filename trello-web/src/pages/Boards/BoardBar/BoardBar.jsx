@@ -10,6 +10,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import { capitalizeFirstLetter } from '~/utils/formatters'
 
 const MENU_STYLE = {
   color: 'white',
@@ -25,7 +26,7 @@ const MENU_STYLE = {
   }
 }
 
-function BoardBar() {
+function BoardBar({ board }) {
   return (
     <Box  sx={{
       width: '100%',
@@ -42,13 +43,13 @@ function BoardBar() {
         <Chip 
           sx={MENU_STYLE}
           icon={<DashboardIcon />} 
-          label="TienThangDev MERN STACK Board" 
+          label={board?.title} 
           clickable     
         />
         <Chip 
           sx={MENU_STYLE}
           icon={<VpnLockIcon />} 
-          label="Public/Private Workspace" 
+          label={capitalizeFirstLetter(board?.type)}
           clickable     
         />
         <Chip 

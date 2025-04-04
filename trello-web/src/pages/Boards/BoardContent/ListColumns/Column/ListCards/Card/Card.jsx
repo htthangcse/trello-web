@@ -9,39 +9,28 @@ import GroupIcon from '@mui/icons-material/Group'
 import CommentIcon from '@mui/icons-material/Comment'
 import AttachmentIcon from '@mui/icons-material/Attachment'
 
-function Card({ temporaryHideMedia }) {
-  if (temporaryHideMedia) {
-    return (
-      <MuiCard sx={{
-        cursor: 'pointer',
-        boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
-        overflow: 'unset',
-      }}>
-        <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 }}}>
-          <Typography>Card test 01</Typography>
-        </CardContent>
-      </MuiCard>
-    )
+function Card({ card }) {
+  const shouldShowCardAction = () => {
+    return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
   }
+  
   return (
     <MuiCard sx={{
       cursor: 'pointer',
       boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
       overflow: 'unset',
     }}>
-      <CardMedia
-        sx={{ height: 140 }}
-        image="https://caodang.fpt.edu.vn/wp-content/uploads/1552622453522_640.jpg"
-        title="green iguana"
-      />
+      {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover}/>}
       <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 }}}>
-        <Typography>TienThangDev MERN STACK</Typography>
+        <Typography>{card?.title}</Typography>
       </CardContent>
-      <CardActions sx={{p: '0 4px 8px 4px', }}>
-        <Button startIcon={<GroupIcon/>} size="small">20</Button>
-        <Button startIcon={<CommentIcon/>} size="small">15</Button>
-        <Button startIcon={<AttachmentIcon/>} size="small">10</Button>
-      </CardActions>
+      {shouldShowCardAction() && 
+        <CardActions sx={{p: '0 4px 8px 4px', }}>
+        {!!card?.memberIds?.length && <Button startIcon={<GroupIcon/>} size="small">{card?.memberIds?.length}</Button>}
+        {!!card?.comments?.length && <Button startIcon={<CommentIcon/>} size="small">{card?.comments?.length}</Button>}
+        {!!card?.attachments?.length && <Button startIcon={<AttachmentIcon/>} size="small">{card?.comments?.length}</Button>}        
+        </CardActions>
+      }
     </MuiCard>
   )
 }
