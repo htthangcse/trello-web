@@ -3,7 +3,7 @@ import Column from './Column/Column'
 import Button from '@mui/material/Button'
 import NoteAddIcon from '@mui/icons-material/NoteAdd'
 
-function ListColumns() {
+function ListColumns({ columns }) {
 
   return (
     <Box sx={{
@@ -15,9 +15,12 @@ function ListColumns() {
       ovevrflowY: 'hidden',
       '&::-webkit-scrollbar-track':{ m: 2,}
     }}>
-      {/* box column 01*/}
-      <Column/>
-      <Column/>
+      {/* khi co 1 columns thi nhu nay */}
+      {columns?.map((column) => <Column key={column._id} column={column}/>)} 
+      {/* {columns?.map((column) => {
+        return (<Column key={column._id} column={column}/>)
+      })} */}
+      
       {/* add new column */}
       <Box sx={{
         minWidth: '200px',
