@@ -6,5 +6,6 @@ import { API_ROOT } from '~/utils/constant'
 export const fetchBoardDetailsAPI = async (boardId) => {
   const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`) // ``: string literal
   // Lưu ý: axios sẽ trả về kết quả qua property của nó là data
+  console.log('api: ',response.data)
   return response.data
 }
