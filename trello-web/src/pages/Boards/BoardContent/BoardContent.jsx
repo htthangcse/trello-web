@@ -30,6 +30,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 }
 
 function BoardContent({ board }) {
+  console.log(board)
   // yêu cầu chuột di chuyển 10px thì mới kích hoạt event, fix trường hợp click bị gọi event
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: {distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: {distance: 10 } })
@@ -50,7 +51,10 @@ function BoardContent({ board }) {
   const lastOverId = useRef(null)
 
   useEffect(( ) => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    console.log('columns: ', board?.columns)
+    console.log('columnOrderIds: ', board?.columnOrderIds)
+    //setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    setOrderedColumns(board?.columns)
   }, [board])
 
   // tìm một cái Column theo cardId
@@ -312,8 +316,9 @@ function BoardContent({ board }) {
     // Nếu overId là null thì trả về mảng rỗng - tránh bug crash trang
     return lastOverId.current ?  [{ id: lastOverId.current }] : []
   }, [activeDragItemType, orderedColumns]) 
-
+  console.log('result ', orderedColumns)
   return (
+    
     <DndContext
       // Cảm biến (đã giải thích kỹ ở vd số 30)
       sensors={sensors}
