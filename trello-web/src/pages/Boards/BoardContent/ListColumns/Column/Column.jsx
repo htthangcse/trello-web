@@ -1,7 +1,8 @@
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { useState } from 'react'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Divider from '@mui/material/Divider'
@@ -62,8 +63,8 @@ function Column({ column }) {
   const [newCardTitle, setNewCardTitle] = useState('')
   const addNewCard = () => {
     if(!newCardTitle) {
-      // console.error('Please enter Card Title!')
-      // return
+      toast.error('Please enter Card Title!', { position: "bottom-right"})
+      return
     }
     // console.log(newCardTitle)
     // Gọi API ở đây...
