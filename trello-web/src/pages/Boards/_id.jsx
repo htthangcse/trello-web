@@ -23,10 +23,8 @@ function Board() {
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh',  }}>
       <AppBar/>
-      {/* { board && <BoardBar board={board?.board}/> }
-      { board && <BoardContent board={board?.board}/> } */}
-      <BoardBar board={mockData.board}/>
-      <BoardContent board={mockData.board}/> 
+      { board && <BoardBar board={board?.board}/> }
+      { board && <BoardContent board={board?.board}/> }
     </Container>
   )
 }
