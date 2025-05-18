@@ -55,10 +55,10 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
         '&::-webkit-scrollbar-track':{ m: 2,}
       }}>
         {/* khi co 1 columns thi nhu nay */}
-        {columns?.map((column) => <Column key={column?._id} column={column} createNewCard={createNewCard}/>)} 
-        {/* {columns?.map((column) => {
-          return (<Column key={column._id} column={column}/>)
-        })} */}
+        {/*columns?.map((column) => <Column key={column?._id} column={column} createNewCard={createNewCard}/>)*/} 
+        {columns?.map((column) => {
+          return (<Column key={column._id} column={column} createNewCard={createNewCard}/>)
+        })}
         
         {/* add new column */}
         {!openNewColumnForm
