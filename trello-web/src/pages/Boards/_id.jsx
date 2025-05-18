@@ -5,9 +5,9 @@ import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 //import { mockData } from '~/apis/mock-data'
-import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI } from '~/apis'
+import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
-import { create, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -24,7 +24,6 @@ function Board() {
           column.cardOrderIds = [generatePlaceholderCard(column)._id]
         }
       })
-      console.log('board: ', board)
       setBoard(board)
     })
   }, [])
@@ -61,7 +60,6 @@ function Board() {
       boardId: board?.board._id,
     })
     const createdCard = res.createdCard
-    console.log('createdCard: ', createdCard)
 
     // Cập nhật lại dữ liệu State Board
     const newBoard = { ...board }
@@ -74,6 +72,20 @@ function Board() {
     setBoard(newBoard)
   }
 
+  // Func này có nhiệm vụ gọi API và xử lý khi kéo thả Column xong xuôi
+  const moveColumns = async (dndOrderedColumns) => {
+    // Cập nhật lại cho thuần dữ liệu State Board
+    const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
+    const newBoard = { ...board } // clone cấp 1
+    newBoard.board = { ...board.board} // clone cấp 2
+    newBoard.board.columns = dndOrderedColumns
+    newBoard.board.columnOrderIds = dndOrderedColumnsIds
+    setBoard(newBoard)
+
+    // Gọi API update Board
+    await updateBoardDetailsAPI(newBoard?.board._id, { columnOrderIds: newBoard.board.columnOrderIds })
+  }
+
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh',  }}>
       <AppBar/>
@@ -82,6 +94,7 @@ function Board() {
         board={board?.board}
         createNewColumn={createNewColumn}
         createNewCard={createNewCard}
+        moveColumns={moveColumns}
       /> }
     </Container>
   )
