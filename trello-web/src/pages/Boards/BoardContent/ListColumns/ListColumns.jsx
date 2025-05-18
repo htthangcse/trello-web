@@ -8,18 +8,29 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import {SortableContext, horizontalListSortingStrategy} from '@dnd-kit/sortable'
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
   const [openNewColumnForm, setopenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setopenNewColumnForm(!openNewColumnForm)
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if(!newColumnTitle) {
       toast.error('Please enter Column Title!')
       return
     }
-    // console.log(newColumnTitle)
-    // Gọi API ở đây...
+    // Tạo dữ liệu Column để gọi API
+    const newColumnData = {
+      title: newColumnTitle
+    }
+    
+    /**
+     * Gọi lên props function createNewColumn nằm ở component cha cao nhất (boards/_id.jsx)
+     * Lưu ý: Về sau ở học phần MERN STACK Advance học trực tiếp thì chúng ta sẽ đưa dữ liệu board ra ngoài Redux Global Store
+     * Thì lúc này chúng ta có thể gọi API ở đây là xong thay vì phải lần lượt gọi ngược lên những
+     * component cha phía bên trên. (Đối với component con nằm càng sâu thì càng khổ)
+     * Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều
+     */
+    await createNewColumn(newColumnData)
 
     // Đóng trạng thái thêm Column mới & clear input
     toggleOpenNewColumnForm()
@@ -40,11 +51,11 @@ function ListColumns({ columns }) {
         height: '100%',
         display: 'flex',
         overflowX: 'auto',
-        ovevrflowY: 'hidden',
+        ovevflowY: 'hidden',
         '&::-webkit-scrollbar-track':{ m: 2,}
       }}>
         {/* khi co 1 columns thi nhu nay */}
-        {columns?.map((column) => <Column key={column._id} column={column}/>)} 
+        {columns?.map((column) => <Column key={column?._id} column={column} createNewCard={createNewCard}/>)} 
         {/* {columns?.map((column) => {
           return (<Column key={column._id} column={column}/>)
         })} */}
@@ -74,7 +85,7 @@ function ListColumns({ columns }) {
           </Box>
           : <Box sx={{
             minWidth: '250px',
-            maxWidth: '250pxp',
+            maxWidth: '250px',
             mx: 2,
             p: 1,
             borderRadius: '6px',
