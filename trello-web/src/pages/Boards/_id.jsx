@@ -4,10 +4,15 @@ import Container from '@mui/material/Container'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
+import { mapOrder } from '~/utils/sorts'
 //import { mockData } from '~/apis/mock-data'
-import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI } from '~/apis'
+import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI, updateColumnDetailsAPI} from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
+
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import { Typography } from '@mui/material'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -17,11 +22,19 @@ function Board() {
     const boardId = '6801bb80189fa8a96c5dcdea'
     // Call API
     fetchBoardDetailsAPI(boardId).then((board) => {
-      // Khi F5 trang web thì cần xử lý vấn đề kéo thả vào một column rỗng (Nhớ lại video 37.2, code hiện tại là video 69)
+      // Sắp xếp thứ tự các column luôn ở đây trước khi đưa dữ liệu xuống bên dưới
+      // các component con (video 71 đã giải thích lý do ở phần fix bug quan trọng)
+      board.board.columns = mapOrder(board.board.columns, board.board.columnOrderIds, '_id')
+
       board?.board?.columns?.forEach( column => {
+        // Khi F5 trang web thì cần xử lý vấn đề kéo thả vào một column rỗng (Nhớ lại video 37.2, code hiện tại là video 69)
         if (isEmpty(column.cards)) {
           column.cards = [generatePlaceholderCard(column)]
           column.cardOrderIds = [generatePlaceholderCard(column)._id]
+        } else {
+          // Sắp xếp thứ tự các card luôn ở đây trước khi đưa dữ liệu xuống bên dưới
+          // các component con (video 71 đã giải thích lý do ở phần fix bug quan trọng)
+          column.cards = mapOrder(column.cards, column.cardOrderIds, '_id' )
         }
       })
       setBoard(board)
@@ -73,7 +86,10 @@ function Board() {
   }
 
   // Func này có nhiệm vụ gọi API và xử lý khi kéo thả Column xong xuôi
-  const moveColumns = async (dndOrderedColumns) => {
+  /*
+  Chỉ cần gọi API để cập nhật lại columnOrderIds của Board đó là xong
+  */
+  const moveColumns = (dndOrderedColumns) => {
     // Cập nhật lại cho thuần dữ liệu State Board
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
     const newBoard = { ...board } // clone cấp 1
@@ -83,7 +99,40 @@ function Board() {
     setBoard(newBoard)
 
     // Gọi API update Board
-    await updateBoardDetailsAPI(newBoard?.board._id, { columnOrderIds: newBoard.board.columnOrderIds })
+    updateBoardDetailsAPI(newBoard?.board._id, { columnOrderIds: newBoard.board.columnOrderIds })
+  }
+
+  /*
+  Khi di chuyển card trong cùng Column:
+  Chỉ cần gọi API để cập nhật lại cardOrderIds của Column đó là xong
+  */
+  const moveCardInTheSameColumn = (dndOrderedCards, dndOrderedCardIds, columnId) => {
+    // Cập nhật lại cho thuần dữ liệu State Board
+    const newBoard = { ...board } // clone cấp 1
+    newBoard.board = { ...board.board} // clone cấp 2
+    const columnToUpdate = newBoard.board.columns.find(column => column._id === columnId)
+    if (columnToUpdate) {
+      columnToUpdate.cards = dndOrderedCards
+      columnToUpdate.cardOrderIds = dndOrderedCardIds
+    }
+    setBoard(newBoard)
+
+    // Gọi API update Column
+    updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds})
+  }
+
+  if (!board) {
+    return (
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        gap: 2, width: '100vw', 
+        height: '100vh' }}>
+        <CircularProgress />
+        <Typography>Loading Board...</Typography>
+      </Box>
+    )
   }
 
   return (
@@ -95,6 +144,7 @@ function Board() {
         createNewColumn={createNewColumn}
         createNewCard={createNewCard}
         moveColumns={moveColumns}
+        moveCardInTheSameColumn={moveCardInTheSameColumn}
       /> }
     </Container>
   )
