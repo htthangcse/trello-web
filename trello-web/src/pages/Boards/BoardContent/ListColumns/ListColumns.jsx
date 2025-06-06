@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import {SortableContext, horizontalListSortingStrategy} from '@dnd-kit/sortable'
 
-function ListColumns({ columns, createNewColumn, createNewCard }) {
+function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDetails }) {
   const [openNewColumnForm, setopenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setopenNewColumnForm(!openNewColumnForm)
 
@@ -57,7 +57,12 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
         {/* khi co 1 columns thi nhu nay */}
         {/*columns?.map((column) => <Column key={column?._id} column={column} createNewCard={createNewCard}/>)*/} 
         {columns?.map((column) => {
-          return (<Column key={column._id} column={column} createNewCard={createNewCard}/>)
+          return (<Column 
+            key={column._id} 
+            column={column} 
+            createNewCard={createNewCard}
+            deleteColumnDetails={deleteColumnDetails}
+            />)
         })}
         
         {/* add new column */}

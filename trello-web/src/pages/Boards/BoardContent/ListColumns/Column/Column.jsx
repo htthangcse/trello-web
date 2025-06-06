@@ -20,11 +20,12 @@ import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCards from './ListCards/ListCards'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
+import { useConfirm } from 'material-ui-confirm'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-function Column({ column, createNewCard }) {
+function Column({ column, createNewCard, deleteColumnDetails }) {
   /*
   The items are stretched because you're using CSS.Transform.toString(), 
   use CSS.Translate.toString() if you don't want to have the scale 
@@ -85,6 +86,43 @@ function Column({ column, createNewCard }) {
     setNewCardTitle('')
   }
 
+  // Xử lý xóa một Column và Cards bên trong nó
+  const confirmDeleteColumn = useConfirm()
+  const handleDeleteColumn = async () => {
+    // const { confirmed, reason } = await confirm({
+    //   description: "This action is permanent!",
+    // });
+
+    // if (confirmed) {
+    //   /* ... */
+    // }
+
+    // console.log(reason);
+    // //=> "confirm" | "cancel" | "natural" | "unmount"
+    confirmDeleteColumn({
+      title: 'Delete Column?',
+      description: 'This action is permanent delete your Column and its Cards! Are you sure?',
+      confirmationText: 'Confirm',
+      cancelmationText: 'Cancel',
+
+      // allowClose: false,
+      // dialogProps: { maxWidth: 'xs' },
+      // confirmationButtonProps: { color: 'primary', variant: 'outlined' },
+      // cancellationButtonProps: { color: 'inherit' },
+      // confirmationKeyword: 'Tienthangdev',
+    }).then(() => {
+      /**
+     * Gọi lên props function deleteColumnDetails nằm ở component cha cao nhất (boards/_id.jsx)
+     * Lưu ý: Về sau ở học phần MERN STACK Advance học trực tiếp thì chúng ta sẽ đưa dữ liệu board ra ngoài Redux Global Store
+     * Thì lúc này chúng ta có thể gọi API ở đây là xong thay vì phải lần lượt gọi ngược lên những
+     * component cha phía bên trên. (Đối với component con nằm càng sâu thì càng khổ)
+     * Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều
+     */
+      deleteColumnDetails(column._id)
+    }).catch(() => {})
+    
+  }
+
   return (
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
       <Box 
@@ -131,11 +169,14 @@ function Column({ column, createNewCard }) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'basic-button',
               }}
             >
-              <MenuItem>
+              <MenuItem
+                onClick={toggleOpenNewCardForm}
+              >
                 <ListItemIcon><AddCardIcon fontSize="small" /></ListItemIcon>
                 <ListItemText>Add new card</ListItemText>
               </MenuItem>
@@ -153,9 +194,16 @@ function Column({ column, createNewCard }) {
               </MenuItem>
 
               <Divider />
-              <MenuItem>
+              <MenuItem
+                onClick={handleDeleteColumn}
+                sx={{
+                  '&hover': {
+                    color: 'waring.main',
+                  }
+                }}
+              >
                 <ListItemIcon> <DeleteForeverIcon fontSize="small" /> </ListItemIcon>
-                <ListItemText>Remove this column</ListItemText>                </MenuItem>
+                <ListItemText>Delete this column</ListItemText>                </MenuItem>
               <MenuItem>
                 <ListItemIcon> <Cloud fontSize="small" /> </ListItemIcon>
                 <ListItemText>Archive this column</ListItemText>
